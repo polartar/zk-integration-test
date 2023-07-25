@@ -1,11 +1,11 @@
 import { SupportedChainId } from 'types/constants/supported-chains';
-import * as zkSync from 'zksync';
+import { Web3Provider } from 'zksync-web3';
 
 export const getZkSyncWallet = async (signer: any, networkName: string) => {
-  const syncProvider = await zkSync.getDefaultProvider(networkName);
-
-  // Error is happening here
-  return await zkSync.Wallet.fromEthSigner(signer, syncProvider);
+  // const provider = new Web3Provider(signer.gerProvider());
+  const provider = new Web3Provider((window as any).ethereum);
+  await provider.send('eth_requestAccounts', []);
+  return provider.getSigner();
 };
 
 export const getSigner = async (signer: any, chainId: number) => {

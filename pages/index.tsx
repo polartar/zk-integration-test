@@ -6,6 +6,7 @@ import { parseEther } from 'ethers/lib/utils';
 import type { NextPage } from 'next';
 import React from 'react';
 import { getSigner } from 'services/zkSync';
+import { Web3Provider, ContractFactory } from 'zksync-web3';
 
 const Home: NextPage = () => {
   const { library, active, activate, account, chainId } = useWeb3React();
@@ -17,14 +18,8 @@ const Home: NextPage = () => {
       } else if (chainId) {
         // Error is happening here
         const signer = await getSigner(library.getSigner(), chainId);
-
-        const TokenFactory = new ethers.ContractFactory(
-          FullPremintERC20Token.abi,
-          FullPremintERC20Token.bytecode,
-          signer
-        );
-        await TokenFactory.deploy();
-        await TokenFactory.deploy(name, 'symbol', parseEther('123123123'), true);
+        const TokenFactory = new ContractFactory(FullPremintERC20Token.abi, FullPremintERC20Token.bytecode, signer);
+        await TokenFactory.deploy('name', 'symbol', parseEther('123123123'), true);
       }
     } catch (err) {
       console.log('handleCreateToken - ', err);
